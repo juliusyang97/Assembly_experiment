@@ -1,0 +1,35 @@
+ data segment       
+    org 10       
+    number_y dw 76A3h       
+    addr_y dw   ?       
+    count db ?              
+ data ends     
+ code segment       
+     assume cs:code, ds:data          
+ start:        
+mov ax, data       
+mov ds, ax              
+mov bx, offset number_y ; move the relatvie address of number_y to bx        
+mov addr_y, bx          ; move  the address in bx to addr_y memory unit       
+mov bx, addr_y          ; move the content of addr_y memory unit to bx       
+mov ax, word ptr [bx]   ; mov the number_y to ax indrectly!             
+mov cl, 0               ; init cl 0, for count the 1 in the ax (number_y)   
+next:       
+test ax, 0ffffh  ; test ax is zero?       
+jz  exit         ;   if 0 , all bits has been tested, exit it                 
+shl ax,1         ; logical shift left, the highest bit is putted into CF       
+jnc next         ;      if CF=0, the highest bit is 0 ; continue                     
+inc cl           ;          if cf=1, the hightest bit is 1, so increase cl       
+jmp next         ;  contine          
+exit:       
+mov count, cl    ; save the number of 1 in ax to the memory unit count              
+; display the number in the memory unit count , assume  its value little to 10       
+mov dl,cl       
+add dl, 30h        
+mov ah,02h       
+int 21h     
+; the exit system call       
+mov ah, 4ch       
+int 21h    
+code ends       
+end start

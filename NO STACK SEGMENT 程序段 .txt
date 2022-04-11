@@ -1,0 +1,3 @@
+stack segment stack
+   db 100 dup(0)
+stack ends
